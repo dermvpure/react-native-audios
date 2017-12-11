@@ -1,0 +1,17 @@
+# OSX
+#
+.DS_Store
+
+# Xcode
+#
+build/
+
+# node.js
+#
+node_modules/
+package-lock.json
+
+android/gradle/
+android/gradlew
+android/gradlew.bat
+.idea

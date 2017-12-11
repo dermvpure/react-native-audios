@@ -1,0 +1,26 @@
+{
+  "name": "react-native-audios",
+  "version": "0.0.1",
+  "description": "Record and play audio in iOS or Android React Native apps.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/dermvpure/react-native-audios.git"
+  },
+  "keywords": [
+    "react",
+    "react-native",
+    "audio",
+    "sound",
+    "record"
+  ],
+  "author": "liuyanhongwl",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dermvpure/react-native-audios/issues"
+  },
+  "homepage": "https://github.com/dermvpure/react-native-audios#readme"
+}
