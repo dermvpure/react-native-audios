@@ -15,7 +15,7 @@ import {
 import Sound from './AudioSound';
 import {AudioRecorder, AudioUtils} from './AudioRecorder';
 
-class App extends Component {
+class AudioDemo extends Component {
 
   state = {
     currentTime: 0.0,
@@ -229,4 +229,4 @@ var styles = StyleSheet.create({
 
 });
 
-export default App;
+export default AudioDemo;

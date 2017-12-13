@@ -147,7 +147,7 @@ function playSound(testInfo, component) {
   }
 }
 
-class MainView extends Component {
+class SoundDemo extends Component {
   constructor(props) {
     super(props);
 
@@ -193,4 +193,4 @@ class MainView extends Component {
   }
 }
 
-export default MainView;
+export default SoundDemo;

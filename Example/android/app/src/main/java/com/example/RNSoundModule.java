@@ -1,13 +1,12 @@
 package com.example;
 
-import android.annotation.TargetApi;
-import android.media.AudioManager;
+import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.net.Uri;
-import android.os.Build;
-import android.util.Log;
+import android.media.AudioManager;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
@@ -16,20 +15,25 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.ExceptionsManagerModule;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.IOException;
+
+import android.util.Log;
 
 public class RNSoundModule extends ReactContextBaseJavaModule {
   Map<Integer, MediaPlayer> playerPool = new HashMap<>();
   ReactApplicationContext context;
   final static Object NULL = null;
+  String category;
 
   public RNSoundModule(ReactApplicationContext context) {
     super(context);
     this.context = context;
+    this.category = null;
   }
 
   @Override
@@ -48,6 +52,27 @@ public class RNSoundModule extends ReactContextBaseJavaModule {
     }
 
     final RNSoundModule module = this;
+
+    if (module.category != null) {
+      Integer category = null;
+      switch (module.category) {
+        case "Playback":
+          category = AudioManager.STREAM_MUSIC;
+          break;
+        case "Ambient":
+          category = AudioManager.STREAM_NOTIFICATION;
+          break;
+        case "System":
+          category = AudioManager.STREAM_SYSTEM;
+          break;
+        default:
+          Log.e("RNSoundModule", String.format("Unrecognised category %s", module.category));
+          break;
+      }
+      if (category != null) {
+        player.setAudioStreamType(category);
+      }
+    }
 
     player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
       boolean callbackWasCalled = false;
@@ -100,11 +125,20 @@ public class RNSoundModule extends ReactContextBaseJavaModule {
 
   protected MediaPlayer createMediaPlayer(final String fileName) {
     int res = this.context.getResources().getIdentifier(fileName, "raw", this.context.getPackageName());
+    MediaPlayer mediaPlayer = new MediaPlayer();
     if (res != 0) {
-      return MediaPlayer.create(this.context, res);
+      try {
+        AssetFileDescriptor afd = context.getResources().openRawResourceFd(res);
+        mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+        afd.close();
+      } catch (IOException e) {
+        Log.e("RNSoundModule", "Exception", e);
+        return null;
+      }
+      return mediaPlayer;
     }
-    if(fileName.startsWith("http://") || fileName.startsWith("https://")) {
-      MediaPlayer mediaPlayer = new MediaPlayer();
+
+    if (fileName.startsWith("http://") || fileName.startsWith("https://")) {
       mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
       Log.i("RNSoundModule", fileName);
       try {
@@ -114,6 +148,18 @@ public class RNSoundModule extends ReactContextBaseJavaModule {
         return null;
       }
       return mediaPlayer;
+    }
+
+    if (fileName.startsWith("asset:/")){
+        try {
+            AssetFileDescriptor descriptor = this.context.getAssets().openFd(fileName.replace("asset:/", ""));
+            mediaPlayer.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
+            descriptor.close();
+            return mediaPlayer;
+        } catch(IOException e) {
+            Log.e("RNSoundModule", "Exception", e);
+            return null;
+        }
     }
 
     File file = new File(fileName);
@@ -185,6 +231,14 @@ public class RNSoundModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void reset(final Integer key) {
+    MediaPlayer player = this.playerPool.get(key);
+    if (player != null) {
+      player.reset();
+    }
+  }
+
+  @ReactMethod
   public void release(final Integer key) {
     MediaPlayer player = this.playerPool.get(key);
     if (player != null) {
@@ -202,6 +256,28 @@ public class RNSoundModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void getSystemVolume(final Callback callback) {
+    try {
+      AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+
+      callback.invoke(NULL, (float) audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) / audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+    } catch (Exception error) {
+      WritableMap e = Arguments.createMap();
+      e.putInt("code", -1);
+      e.putString("message", error.getMessage());
+      callback.invoke(e);
+    }
+  }
+
+  @ReactMethod
+  public void setSystemVolume(final Float value) {
+    AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+
+    int volume = Math.round(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) * value);
+    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
+  }
+
+  @ReactMethod
   public void setLooping(final Integer key, final Boolean looping) {
     MediaPlayer player = this.playerPool.get(key);
     if (player != null) {
@@ -209,7 +285,6 @@ public class RNSoundModule extends ReactContextBaseJavaModule {
     }
   }
 
-  @TargetApi(Build.VERSION_CODES.M)
   @ReactMethod
   public void setSpeed(final Integer key, final Float speed) {
     MediaPlayer player = this.playerPool.get(key);
@@ -246,6 +321,11 @@ public class RNSoundModule extends ReactContextBaseJavaModule {
       audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
       audioManager.setSpeakerphoneOn(speaker);
     }
+  }
+
+  @ReactMethod
+  public void setCategory(final String category, final Boolean mixWithOthers) {
+    this.category = category;
   }
 
   @ReactMethod
