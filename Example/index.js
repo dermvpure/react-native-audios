@@ -1,6 +1,17 @@
 import { AppRegistry } from 'react-native';
+import { StackNavigator } from 'react-navigation'
 import AudioDemo from './AudioDemo.js';
 import SoundDemo from './SoundDemo.js';
 
-// AppRegistry.registerComponent('Example', () => AudioDemo);
-AppRegistry.registerComponent('Example', () => SoundDemo);
+
+const MainStack = StackNavigator({
+  AudioDemo: {
+    screen: AudioDemo
+  },
+  SoundDemo: {
+    screen: SoundDemo
+  }
+})
+
+AppRegistry.registerComponent('Example', () => MainStack);
+

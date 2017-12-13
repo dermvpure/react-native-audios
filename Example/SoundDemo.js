@@ -66,23 +66,23 @@ const resultIcons = {
 
 const audioTests = [
   {
-    title: 'mp3 in bundle',
-    url: 'advertising.mp3',
-    basePath: Sound.MAIN_BUNDLE,
+    title: 'mp3 via require()',
+    isRequire: true,
+    url: require('./advertising.mp3'),
   },
   {
-    title: 'mp3 in bundle (looped)',
-    url: 'advertising.mp3',
-    basePath: Sound.MAIN_BUNDLE,
+    title: 'mp3 via require()  looped',
+    isRequire: true,
+    url: require('./advertising.mp3'),
     onPrepared: (sound, component) => {
       sound.setNumberOfLoops(-1);
       component.setState({loopingSound: sound});
     },
   },
   {
-    title: 'mp3 via require()',
+    title: 'mp3 via require()  looped  stop',
     isRequire: true,
-    url: require('./advertising.mp3'),
+    buttonLabel: 'STOP',
   },
   {
     title: 'mp3 remote download',
@@ -99,17 +99,7 @@ const audioTests = [
   {
     title: 'wav remote download',
     url: 'https://raw.githubusercontent.com/zmxv/react-native-sound-demo/master/frog.wav',
-  },
-  {
-    title: 'aac via require()',
-    isRequire: true,
-    url: require('./pew2.aac'),
-  },
-  {
-    title: 'wav via require()',
-    isRequire: true,
-    url: require('./frog.wav'),
-  },
+  }
 ];
 
 function setTestState(testInfo, component, status) {
@@ -148,6 +138,10 @@ function playSound(testInfo, component) {
 }
 
 class SoundDemo extends Component {
+  static navigationOptions = {
+    title: 'Sound Demo'
+  }
+
   constructor(props) {
     super(props);
 
@@ -172,7 +166,6 @@ class SoundDemo extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header style={styles.title}>react-native-sound-demo</Header>
         <ScrollView style={styles.container} contentContainerStyle={styles.scrollContainer}>
           {audioTests.map(testInfo => {
             return (
@@ -180,13 +173,13 @@ class SoundDemo extends Component {
                 status={this.state.tests[testInfo.title]}
                 key={testInfo.title}
                 title={testInfo.title}
+                buttonLabel={testInfo.buttonLabel}
                 onPress={() => {
-                  return playSound(testInfo, this);
+                  return testInfo.buttonLabel === 'STOP' ? this.stopSoundLooped() : playSound(testInfo, this);
                 }}
               />
             );
           })}
-          <Feature title="mp3 in bundle (looped)" buttonLabel={'STOP'} onPress={this.stopSoundLooped} />
         </ScrollView>
       </View>
     );

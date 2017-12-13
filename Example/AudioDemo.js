@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
@@ -10,12 +9,13 @@ import {
   PermissionsAndroid,
 } from 'react-native';
 
-// import Sound from 'react-native-sound';
-// import {AudioRecorder, AudioUtils} from 'react-native-audio';
 import Sound from './AudioSound';
 import {AudioRecorder, AudioUtils} from './AudioRecorder';
 
 class AudioDemo extends Component {
+  static navigationOptions = {
+    title: 'Record Demo'
+  }
 
   state = {
     currentTime: 0.0,
@@ -181,16 +181,21 @@ class AudioDemo extends Component {
     console.log(`Finished recording of duration ${this.state.currentTime} seconds at path: ${filePath}`);
   }
 
+  _naviToSoundDemo() {
+    this.props.navigation.navigate('SoundDemo')
+  }
+
   render() {
 
     return (
       <View style={styles.container}>
         <View style={styles.controls}>
+          <Text style={styles.progressText}>{this.state.currentTime}s</Text>
           {this._renderButton("RECORD", () => {this._record()}, this.state.recording )}
           {this._renderButton("PLAY", () => {this._play()} )}
           {this._renderButton("STOP", () => {this._stop()} )}
           {this._renderButton("PAUSE", () => {this._pause()} )}
-          <Text style={styles.progressText}>{this.state.currentTime}s</Text>
+          {this._renderButton("SOUND DEMO", () => {this._naviToSoundDemo()} )}
         </View>
       </View>
     );
