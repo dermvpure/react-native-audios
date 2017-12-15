@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class RNAudioPackage implements ReactPackage {
+public class RNAudiosPackage implements ReactPackage {
 
     /**
      * @param reactContext react application context that can be used to create modules
@@ -20,7 +20,7 @@ public class RNAudioPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new AudioRecorderManager(reactContext));
-
+        modules.add(new RNSoundModule(reactContext));
         return modules;
     }
 
