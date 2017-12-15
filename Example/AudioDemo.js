@@ -9,8 +9,7 @@ import {
   PermissionsAndroid,
 } from 'react-native';
 
-import Sound from './AudioSound';
-import {AudioRecorder, AudioUtils} from './AudioRecorder';
+import { AudioRecorder, AudioUtils, Sound } from 'react-native-audios';
 
 class AudioDemo extends Component {
   static navigationOptions = {

@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
-import {StyleSheet, Text, TouchableOpacity, View, ScrollView, Alert} from 'react-native';
-import Sound from './AudioSound';
+import { StyleSheet, Text, TouchableOpacity, View, ScrollView, Alert } from 'react-native';
+import { Sound } from 'react-native-audios';
 
 const styles = StyleSheet.create({
   container: {
@@ -40,18 +40,18 @@ const styles = StyleSheet.create({
   },
 });
 
-const Button = ({title, onPress}) => (
+const Button = ({ title, onPress }) => (
   <TouchableOpacity onPress={onPress}>
     <Text style={styles.button}>{title}</Text>
   </TouchableOpacity>
 );
 
-const Header = ({children, style}) => <Text style={[styles.header, style]}>{children}</Text>;
+const Header = ({ children, style }) => <Text style={[styles.header, style]}>{children}</Text>;
 
-const Feature = ({title, onPress, description, buttonLabel = 'PLAY', status}) => (
+const Feature = ({ title, onPress, description, buttonLabel = 'PLAY', status }) => (
   <View style={styles.feature}>
-    <Header style={{flex: 1}}>{title}</Header>
-    {status ? <Text style={{padding: 5}}>{resultIcons[status] || ''}</Text> : null}
+    <Header style={{ flex: 1 }}>{title}</Header>
+    {status ? <Text style={{ padding: 5 }}>{resultIcons[status] || ''}</Text> : null}
     <Button title={buttonLabel} onPress={onPress} />
   </View>
 );
@@ -76,7 +76,7 @@ const audioTests = [
     url: require('./advertising.mp3'),
     onPrepared: (sound, component) => {
       sound.setNumberOfLoops(-1);
-      component.setState({loopingSound: sound});
+      component.setState({ loopingSound: sound });
     },
   },
   {
@@ -103,7 +103,7 @@ const audioTests = [
 ];
 
 function setTestState(testInfo, component, status) {
-  component.setState({tests: {...component.state.tests, [testInfo.title]: status}});
+  component.setState({ tests: { ...component.state.tests, [testInfo.title]: status } });
 }
 
 /**
@@ -154,7 +154,7 @@ class SoundDemo extends Component {
       }
 
       this.state.loopingSound.stop().release();
-      this.setState({loopingSound: null, tests: {...this.state.tests, ['mp3 in bundle (looped)']: 'win'}});
+      this.setState({ loopingSound: null, tests: { ...this.state.tests, ['mp3 in bundle (looped)']: 'win' } });
     };
 
     this.state = {
