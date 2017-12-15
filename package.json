@@ -1,6 +1,6 @@
 {
   "name": "react-native-audios",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Record and play audio in iOS or Android React Native apps.",
   "main": "index.js",
   "scripts": {
