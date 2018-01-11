@@ -1,6 +1,6 @@
-[![npm](https://img.shields.io/npm/v/react-native-audios.svg)](https://www.npmjs.com/package/react-native-pop-menu)
-[![npm](https://img.shields.io/npm/dm/react-native-audios.svg)](https://www.npmjs.com/package/react-native-pop-menu)
-[![npm](https://img.shields.io/npm/l/react-native-audios.svg)]()
+[![npm](https://img.shields.io/npm/v/react-native-audios.svg)](https://www.npmjs.com/package/react-native-audios)
+[![npm](https://img.shields.io/npm/dm/react-native-audios.svg)](https://www.npmjs.com/package/react-native-audios)
+[![npm](https://img.shields.io/npm/l/react-native-audios.svg)](https://www.npmjs.com/package/react-native-audios)
 
 Record and play audio in iOS or Android React Native apps.
 
@@ -9,13 +9,13 @@ Record and play audio in iOS or Android React Native apps.
 
 ## Installation
 
-```javascript
+```
 npm install react-native-audios --save
 ```
 
 Then link it automatically using:
 
-```javascript
+```
 react-native link react-native-audios
 ```
 
